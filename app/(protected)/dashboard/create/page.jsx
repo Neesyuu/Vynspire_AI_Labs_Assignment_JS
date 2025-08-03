@@ -1,13 +1,16 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
+import { CategoryList } from "@/config/category";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function CreatePostPage() {
+  const { userData } = useAuth();
   const [formData, setFormData] = useState({
     title: "",
     excerpt: "",
     content: "",
-    author: "",
+    author: userData?.id,
     category: "",
     status: "draft",
     imageUrl: "",
@@ -16,7 +19,7 @@ export default function CreatePostPage() {
 
   const [errors, setErrors] = useState({});
 
-  const categories = ["Technology", "Programming", "Design", "Performance", "CSS", "JavaScript", "React"];
+  const categories = CategoryList;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -86,7 +89,7 @@ export default function CreatePostPage() {
           <div className=" p-6 border border-gray-700">
             <h2 className="text-xl font-semibold text-white mb-6">Basic Information</h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">Title *</label>
                 <input
@@ -100,21 +103,6 @@ export default function CreatePostPage() {
                   placeholder="Enter post title"
                 />
                 {errors.title && <p className="text-red-400 text-sm mt-1">{errors.title}</p>}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Author *</label>
-                <input
-                  type="text"
-                  name="author"
-                  value={formData.author}
-                  onChange={handleChange}
-                  className={`w-full px-4 py-3  border focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent text-white placeholder-gray-400 ${
-                    errors.author ? "border-red-500" : "border-gray-600"
-                  }`}
-                  placeholder="Enter author name"
-                />
-                {errors.author && <p className="text-red-400 text-sm mt-1">{errors.author}</p>}
               </div>
             </div>
 
@@ -140,7 +128,7 @@ export default function CreatePostPage() {
                   name="category"
                   value={formData.category}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3  border focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent text-white ${
+                  className={`w-full px-4 py-3 bg-black border focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent text-white ${
                     errors.category ? "border-red-500" : "border-gray-600"
                   }`}
                 >
@@ -160,7 +148,7 @@ export default function CreatePostPage() {
                   name="status"
                   value={formData.status}
                   onChange={handleChange}
-                  className="w-full px-4 py-3  border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent text-white"
+                  className="w-full px-4 py-3 bg-black border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent text-white"
                 >
                   <option value="draft">Draft</option>
                   <option value="published">Published</option>

@@ -1,6 +1,12 @@
 "use client";
+import { storeData } from "@/apiServices/apiService";
+import LoadingDots from "@/components/LoadingDots";
+import { useAuth } from "@/hooks/useAuth";
+import { generateToken } from "@/utils/tokenController";
 import Link from "next/link";
-import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import * as yup from "yup";
 
 export default function Register() {
@@ -14,6 +20,12 @@ export default function Register() {
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const router = useRouter();
+
+  const { registerUser, isLoading, setIsLoading, fetchAuthentication, isAuthorized } = useAuth();
+
+  const [checkingAuth, setCheckingAuth] = useState(true);
 
   // Yup validation schema
   const validationSchema = yup.object().shape({
@@ -98,9 +110,11 @@ export default function Register() {
       // Clear all errors if validation passes
       setErrors({});
 
-      // TODO: handle registration logic
-      console.log("Registration data:", formData);
-      alert("Registration successful!");
+      const response = await registerUser(formData.fullName, formData.email, formData.password);
+
+      if (response) {
+        router.push("/dashboard");
+      }
     } catch (error) {
       if (error instanceof yup.ValidationError) {
         const newErrors = {};
@@ -113,6 +127,22 @@ export default function Register() {
       }
     }
   };
+
+  useEffect(() => {
+    if (fetchAuthentication()) {
+      router.push("/dashboard");
+    } else {
+      setCheckingAuth(false);
+    }
+  }, [isLoading, isAuthorized, router]);
+
+  if (checkingAuth) {
+    return (
+      <div className="flex justify-center items-center h-[60vh]">
+        <LoadingDots />
+      </div>
+    );
+  }
 
   return (
     <div className="mt-8 w-1/4">
@@ -267,14 +297,20 @@ export default function Register() {
         <div>
           <button
             type="submit"
-            disabled={!isFormValid()}
+            disabled={!isFormValid() || isLoading}
             className={`w-full py-2 px-4 font-semibold  shadow-md transition duration-300 ease-in-out ${
               isFormValid()
                 ? "cursor-pointer bg-red-500 hover:bg-red-700 text-white"
                 : "cursor-not-allowed bg-red-900 text-gray-300"
             }`}
           >
-            Register
+            {isLoading ? (
+              <div className="py-2">
+                <LoadingDots />
+              </div>
+            ) : (
+              "Register"
+            )}
           </button>
         </div>
       </form>

@@ -1,8 +1,10 @@
 import ViewCardComponent from "@/components/cards/ViewCardComponent";
 import { CategoryList } from "@/config/category";
 import Link from "next/link";
+import { use } from "react";
 
-export default function Home() {
+export default function Blogs({ params }) {
+  const { category } = use(params);
   const id = 1;
   const categories = CategoryList;
   return (
@@ -12,12 +14,20 @@ export default function Home() {
           <div className="tags flex flex-col gap-1 h-full ">
             <div className="listTags my-auto">
               <ul className="">
-                <li className="text-4xl font-bold text-red-500 hover:text-white transition-all duration-300 my-2">
+                <li className="text-sm opacity-50 hover:opacity-100 my-1 transition-all duration-300">
                   <Link href={"/"}>All</Link>
                 </li>
-                {categories.map((category) => (
-                  <li className="text-sm opacity-50 hover:opacity-100 my-1 transition-all duration-300" key={category}>
-                    <Link href={`/blog/${category.toLowerCase()}`}>{category}</Link>
+
+                {categories.map((categorySelected) => (
+                  <li
+                    className={`${
+                      categorySelected.toLowerCase() === category
+                        ? "text-3xl font-bold text-red-500 hover:text-white my-2"
+                        : "text-sm opacity-50 hover:opacity-100 my-1"
+                    } transition-all duration-300`}
+                    key={categorySelected.toLowerCase()}
+                  >
+                    <Link href={`/blog/${categorySelected.toLowerCase()}`}>{categorySelected}</Link>
                   </li>
                 ))}
                 {/* <li className="text-4xl font-bold text-red-500 hover:text-white transition-all duration-300 my-2">

@@ -1,6 +1,9 @@
 "use client";
+import LoadingDots from "@/components/LoadingDots";
+import { useAuth } from "@/hooks/useAuth";
 import Link from "next/link";
-import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import * as yup from "yup";
 
 export default function Login() {
@@ -11,6 +14,11 @@ export default function Login() {
 
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
+
+  const { loginUser, isLoading, setIsLoading, fetchAuthentication, isAuthorized } = useAuth();
+  const router = useRouter();
+
+  const [checkingAuth, setCheckingAuth] = useState(true);
 
   // Yup validation schema
   const validationSchema = yup.object().shape({
@@ -63,6 +71,7 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
     try {
       // Validate all fields
@@ -70,10 +79,15 @@ export default function Login() {
 
       // Clear all errors if validation passes
       setErrors({});
-
-      // TODO: handle login logic
-      console.log("Login data:", formData);
-      alert("Login successful!");
+      // setIsLoading(true);
+      const response = await loginUser(formData.email, formData.password);
+      if (response) {
+        router.push("/dashboard");
+        await new Promise((resolve) => setTimeout(resolve, 800));
+        setIsLoading(false);
+      } else {
+        setIsLoading(false);
+      }
     } catch (error) {
       if (error instanceof yup.ValidationError) {
         const newErrors = {};
@@ -86,6 +100,23 @@ export default function Login() {
       }
     }
   };
+
+  useEffect(() => {
+    if (fetchAuthentication()) {
+      router.push("/dashboard");
+    } else {
+      setCheckingAuth(false);
+    }
+  }, [isLoading, isAuthorized, router]);
+
+  if (checkingAuth) {
+    return (
+      <div className="flex justify-center items-center h-[60vh]">
+        <LoadingDots />
+      </div>
+    );
+  }
+
   return (
     <div className="mt-16 w-1/4">
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -167,13 +198,20 @@ export default function Login() {
           <button
             type="submit"
             disabled={!isFormValid()}
+            onClick={handleSubmit}
             className={`w-full py-2 px-4 font-semibold  shadow-md transition duration-300 ease-in-out ${
               isFormValid()
                 ? "cursor-pointer bg-red-500 hover:bg-red-700 text-white"
                 : "cursor-not-allowed bg-red-900 text-gray-300"
             }`}
           >
-            Log In
+            {isLoading ? (
+              <div className="py-2">
+                <LoadingDots />
+              </div>
+            ) : (
+              "Log In"
+            )}
           </button>
         </div>
       </form>

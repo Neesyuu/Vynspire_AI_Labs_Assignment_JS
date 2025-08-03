@@ -1,5 +1,6 @@
 import Link from "next/link";
 import React from "react";
+import NavbarButtonChecker from "./NavbarButtonChecker";
 
 export default function NavbarComponent() {
   return (
@@ -19,7 +20,7 @@ export default function NavbarComponent() {
             <Link href={"/dashboard"}>Contact</Link>
           </li>
           <li>
-            <Link href={"/login"}>Login</Link>
+            <NavbarButtonChecker />
           </li>
         </ul>
       </div>
