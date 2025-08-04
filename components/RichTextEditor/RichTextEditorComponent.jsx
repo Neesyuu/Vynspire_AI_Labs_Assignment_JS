@@ -35,7 +35,6 @@ export default function RichTextEditorComponent({ content, onChange }) {
       },
     },
     onUpdate: ({ editor }) => {
-      // console.log(editor.getHTML());
       onChange(editor.getHTML());
     },
   });

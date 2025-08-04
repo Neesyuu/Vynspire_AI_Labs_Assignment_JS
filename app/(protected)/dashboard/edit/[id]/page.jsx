@@ -127,8 +127,6 @@ export default function EditPostPage() {
       tags: processTags(formData.tags), // Convert tags string to array
     };
 
-    // Handle form submission here
-    console.log("Form submitted:", formData);
     // You would typically send this to your API
     const response = await updatePost(
       postId,
@@ -141,7 +139,7 @@ export default function EditPostPage() {
       submissionData.status,
       submissionData.category
     );
-    console.log("Response : ", response);
+
     if (response) {
       toast.success("Post updated successfully!");
       router.push(`/blog/${submissionData.category.toLowerCase()}/${postId}`);

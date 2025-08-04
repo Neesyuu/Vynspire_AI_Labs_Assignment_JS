@@ -64,18 +64,15 @@ const PostsState = ({ children }) => {
 
   const fetchAllMyPosts = async (userId) => {
     setIsPostsLoading(true);
-    console.log(userId, "userId");
     try {
       const url = "/blogs";
 
       const response = await getAllData(url);
-      console.log(response, "response");
 
       if (response.data) {
         const myPosts = response.data.filter((post) => post.user == userId);
         setAllMyPosts(myPosts);
         setIsPostsLoading(false);
-        console.log(myPosts, "myPosts");
         return true;
       } else {
         // toast.error("Failed to fetch posts");

@@ -21,7 +21,6 @@ export default function DashboardPage() {
   });
 
   useEffect(() => {
-    console.log(allMyPosts, "allMyPosts");
     if (userData && userData.id) {
       fetchAllMyPosts(userData.id);
     } else {
@@ -30,10 +29,8 @@ export default function DashboardPage() {
   }, []);
 
   useEffect(() => {
-    console.log(allMyPosts, "allMyPosts");
     if (userData && userData.id) {
       if (allMyPosts) {
-        console.log("am i in", userData.id);
         fetchAllMyPosts(userData.id);
       }
     }

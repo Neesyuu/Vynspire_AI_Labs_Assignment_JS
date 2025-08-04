@@ -98,8 +98,6 @@ export default function CreatePostPage() {
       tags: processTags(formData.tags), // Convert tags string to array
     };
 
-    // Handle form submission here
-    console.log("Form submitted:", submissionData);
     // You would typically send this to your API
     const response = await createPost(
       submissionData.title,
@@ -110,7 +108,6 @@ export default function CreatePostPage() {
       submissionData.status,
       submissionData.category
     );
-    console.log("Response : ", response);
     if (response) {
       toast.success("Post created successfully!");
       router.push("/dashboard");
