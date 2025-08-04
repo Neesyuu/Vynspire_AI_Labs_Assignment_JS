@@ -118,7 +118,7 @@ export default function Login() {
   }
 
   return (
-    <div className="mt-16 w-1/4">
+    <div className="mt-16 w-full sm:w-1/2 md:w-1/3 lg:w-1/4 transition-all duration-300">
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Email Field */}
         <div>

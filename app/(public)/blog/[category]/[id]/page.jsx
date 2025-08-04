@@ -90,7 +90,7 @@ export default async function BlogPostPage({ params }) {
 
   return (
     <div className="relative w-full">
-      <div className="sticky top-16 z-0">
+      <div className="sticky top-16 z-0 hidden lg:block">
         <Link
           href={`/blog/${category}`}
           className="group text-sm font-semibold text-gray-700 hover:bg-red-500 hover:text-white px-3 py-2 transition duration-300"
@@ -157,13 +157,13 @@ export default async function BlogPostPage({ params }) {
         )}
 
         {/* Share Section */}
-        <div className="mt-12 pt-8 border-t border-gray-200 flex justify-between">
+        <div className="mt-12 pt-8 border-t border-gray-200 flex flex-col sm:flex-row gap-8 sm:gap-0 justify-between">
           <Link href={`/blog/${post.category}`}>
             <span className="px-3 py-1 bg-red-500 text-white text-sm rounded-full hover:bg-red-800 cursor-pointer transition-colors">
               {post.category}
             </span>
           </Link>
-          <div className="flex gap-6">
+          <div className="flex gap-2 sm:gap-6 flex-col sm:flex-row">
             <h3 className="text-lg font-semibold mb-4 my-auto">Share this article</h3>
             <div className="flex gap-4">
               <SocialLinks />
