@@ -19,7 +19,7 @@ export default function DashContent({ filteredPosts }) {
           <PostStatus />
           <div className="social absolute -bottom-10 left-0 w-full">
             <div className="userDetail flex flex-col w-[60%] justify-center my-auto gap-2">
-              <div className="my-auto flex items-center gap-4 border-2 border-red-500 ">
+              <div className="my-auto flex items-center gap-2 border-2 border-red-500 ">
                 <div className="flex items-center">
                   <div className="p-3  group w-14 h-14">
                     <img
@@ -31,7 +31,10 @@ export default function DashContent({ filteredPosts }) {
                     />
                   </div>
                 </div>
-                <div className="nameText">{userData?.fullName}</div>
+                <div className="nameText">
+                  <h3 className="text-sm">{userData?.fullName}</h3>
+                  <p className="text-xs text-gray-500">Blogger</p>
+                </div>
               </div>
               <div className="flex gap-4">
                 <button

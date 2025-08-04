@@ -3,10 +3,42 @@ import { CategoryList } from "@/config/category";
 import Link from "next/link";
 import { use } from "react";
 
-export default function Blogs({ params }) {
-  const { category } = use(params);
+// Server-side function to fetch posts
+async function fetchPosts(category) {
+  try {
+    const apiUrl = process.env.NEXT_PUBLIC_REACT_APP_API_URL;
+    if (!apiUrl) {
+      console.error("API URL not configured");
+      return [];
+    }
+
+    const response = await fetch(`${apiUrl}/blogs`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      cache: "no-store", // Disable caching for fresh data
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    const filteredPosts = data.filter((post) => post.category.toLowerCase() === category.toLowerCase());
+    return filteredPosts || [];
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    return [];
+  }
+}
+
+export default async function Blogs({ params }) {
+  const { category } = await params;
   const id = 1;
   const categories = CategoryList;
+  const allPosts = await fetchPosts(category);
   return (
     <main className="w-full h-[70vh] flex flex-col">
       <div className="grid grid-cols-7 w-full flex-1 min-h-full">
@@ -30,15 +62,6 @@ export default function Blogs({ params }) {
                     <Link href={`/blog/${categorySelected.toLowerCase()}`}>{categorySelected}</Link>
                   </li>
                 ))}
-                {/* <li className="text-4xl font-bold text-red-500 hover:text-white transition-all duration-300 my-2">
-                  <Link href={"/"}>All</Link>
-                </li>
-                <li className="text-base opacity-50 hover:opacity-100 transition-all duration-300">
-                  <Link href={"/"}>Recent</Link>
-                </li>
-                <li className="text-base opacity-50 hover:opacity-100 transition-all duration-300">
-                  <Link href={"/"}>Comedy</Link>
-                </li> */}
               </ul>
             </div>
           </div>
@@ -51,16 +74,16 @@ export default function Blogs({ params }) {
         </div>
         <div className="contentView col-span-5 overflow-y-scroll scrollbar-hide p-2">
           <div className="contentItem grid grid-cols-3 gap-x-6 gap-y-16">
-            <ViewCardComponent imageId="1" />
-            <ViewCardComponent imageId="2" />
-            <ViewCardComponent imageId="1" />
-            <ViewCardComponent imageId="2" />
-            <ViewCardComponent imageId="1" />
-            <ViewCardComponent imageId="2" />
-            <ViewCardComponent imageId="1" />
-            <ViewCardComponent imageId="2" />
-            <ViewCardComponent imageId="1" />
-            <ViewCardComponent imageId="2" />
+            {allPosts.length > 0 ? (
+              allPosts.map((post, index) => (
+                <ViewCardComponent key={post._id || post.id || index} imageId={post.image || "1"} post={post} />
+              ))
+            ) : (
+              // Fallback to static cards if no posts are fetched
+              <>
+                <ViewCardComponent imageId="1" />
+              </>
+            )}
           </div>
         </div>
       </div>

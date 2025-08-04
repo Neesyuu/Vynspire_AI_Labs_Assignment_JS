@@ -47,8 +47,6 @@ export const verifyToken = async (token) => {
   try {
     const secret = new TextEncoder().encode(secretKey || "your-secret-key");
     const { payload } = await jose.jwtVerify(token, secret);
-
-    console.log("verifyTokenResponse : ", payload);
     return payload;
   } catch (err) {
     return 400;
@@ -76,7 +74,6 @@ export const verifyAuthToken = async (req, res, next) => {
       res.status(HttpStatus.UNAUTHORIZED_401).json({ message: "Not allowed" });
     }
   } catch (error) {
-    console.log("error : ", error);
     return res.status(HttpStatus.BAD_REQUEST_400).json(error);
   }
 };

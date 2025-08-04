@@ -1,6 +1,6 @@
 "use client";
 
-import { getAllData, storeData } from "@/apiServices/apiService";
+import { getAllData, postData } from "@/apiServices/apiService";
 import AuthenticationContext from "./AuthenticationContext";
 import { useContext, useState } from "react";
 import { toast } from "react-toastify";
@@ -14,56 +14,6 @@ const AuthenticationState = ({ children }) => {
   const [userData, setUserData] = useState(null);
 
   // await new Promise((resolve) => setTimeout(resolve, 2000));
-
-  const fetchStudentData = async () => {
-    const token = localStorage.getItem("token");
-    const headers = { token: token };
-    try {
-      const url = "/student/view/mine";
-      const response = await getAllData(url, headers);
-
-      if (response.status === 200 || response.status === 201) {
-        setStudentData(response.data.data);
-        setIsAuthorized(true);
-        if (response.data.data.role === "admin" || response.data.data.role === "superadmin") {
-          setIsAdminAuthorized(true);
-          if (response.data.data.role === "superadmin") {
-            setIsSuperAdminAuthorized(true);
-          }
-        }
-        return true;
-      } else {
-        setStudentData();
-        setIsAuthorized(false);
-        setIsAdminAuthorized(false);
-        setIsSuperAdminAuthorized(false);
-        localStorage.removeItem("token");
-        return false;
-      }
-    } catch (err) {
-      setIsAuthorized(false);
-      setIsAdminAuthorized(false);
-      setIsSuperAdminAuthorized(false);
-      toast.error(err);
-      return false;
-    }
-  };
-
-  const fetchAllStudentData = async () => {
-    const token = localStorage.getItem("token");
-    const headers = { token: token };
-    try {
-      const url = "/student/view/all";
-      const response = await getAllData(url, headers);
-      if (response.data) {
-        setGetAllStudentData(response.data.data);
-      } else {
-        setGetAllStudentData([]);
-      }
-    } catch (err) {
-      toast.error(err);
-    }
-  };
 
   const fetchUserByEmail = async (email) => {
     try {
@@ -113,7 +63,7 @@ const AuthenticationState = ({ children }) => {
 
       const url = "/users";
 
-      const response = await storeData(url, data);
+      const response = await postData(url, data);
 
       if (response.data) {
         let responseData = {
@@ -129,7 +79,6 @@ const AuthenticationState = ({ children }) => {
         setUserData(responseData);
 
         await new Promise((resolve) => setTimeout(resolve, 200));
-        setIsLoading(false);
         toast.success("Registration successful!");
         setIsLoading(false);
         return true;
@@ -140,6 +89,7 @@ const AuthenticationState = ({ children }) => {
       }
     } catch (err) {
       toast.error(err);
+      setIsLoading(false);
       return false;
     }
   };
