@@ -1,25 +1,37 @@
 "use client";
+
 import React, { useState } from "react";
 import Link from "next/link";
 import { CategoryList } from "@/config/category";
 import { useAuth } from "@/hooks/useAuth";
+import { PostStatusList } from "@/config/postStatus";
+import { usePosts } from "@/hooks/usePosts";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+import LoadingDots from "@/components/LoadingDots";
+import RichTextEditor from "@/components/RichTextEditor";
 
 export default function CreatePostPage() {
   const { userData } = useAuth();
+
+  const { createPost, isPostsLoading, allPosts, fetchAllPosts } = usePosts();
+
+  const router = useRouter();
+
   const [formData, setFormData] = useState({
     title: "",
-    excerpt: "",
-    content: "",
-    author: userData?.id,
+    description: "",
+    user: userData?.id,
     category: "",
     status: "draft",
-    imageUrl: "",
-    tags: "",
+    image: "",
+    tags: "", // Store as string for input
   });
 
   const [errors, setErrors] = useState({});
 
   const categories = CategoryList;
+  const statusList = PostStatusList;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -37,27 +49,81 @@ export default function CreatePostPage() {
     }
   };
 
-  const handleSubmit = (e) => {
+  // Handle rich text editor changes
+  const handleDescriptionChange = (htmlContent) => {
+    setFormData((prev) => ({
+      ...prev,
+      description: htmlContent,
+    }));
+
+    // Clear error when user starts typing
+    if (errors.description) {
+      setErrors((prev) => ({
+        ...prev,
+        description: "",
+      }));
+    }
+  };
+
+  // Function to process tags string into array
+  const processTags = (tagsString) => {
+    if (!tagsString.trim()) return [];
+
+    return tagsString
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter((tag) => tag.length > 0);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Basic validation
     const newErrors = {};
     if (!formData.title.trim()) newErrors.title = "Title is required";
-    if (!formData.excerpt.trim()) newErrors.excerpt = "Excerpt is required";
-    if (!formData.content.trim()) newErrors.content = "Content is required";
-    if (!formData.author.trim()) newErrors.author = "Author is required";
+    if (!formData.description.trim()) newErrors.description = "Description is required";
     if (!formData.category) newErrors.category = "Category is required";
-    if (!formData.imageUrl.trim()) newErrors.imageUrl = "Image URL is required";
+    if (!formData.image.trim()) newErrors.image = "Image URL is required";
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
 
+    // Process the form data for submission
+    const submissionData = {
+      ...formData,
+      tags: processTags(formData.tags), // Convert tags string to array
+    };
+
     // Handle form submission here
-    console.log("Form submitted:", formData);
+    console.log("Form submitted:", submissionData);
     // You would typically send this to your API
+    const response = await createPost(
+      submissionData.title,
+      submissionData.description,
+      submissionData.image,
+      submissionData.tags,
+      submissionData.status,
+      submissionData.category
+    );
+    console.log("Response : ", response);
+    if (response) {
+      toast.success("Post created successfully!");
+      router.push("/dashboard");
+    } else {
+      toast.error("Post creation failed!");
+    }
   };
+
+  if (isPostsLoading) {
+    return (
+      <div className="flex justify-center flex-col gap-5 items-center h-screen">
+        <LoadingDots />
+        <p className="text-white">Creating post</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen  text-white">
@@ -106,21 +172,6 @@ export default function CreatePostPage() {
               </div>
             </div>
 
-            <div className="mt-6">
-              <label className="block text-sm font-medium text-gray-300 mb-2">Excerpt *</label>
-              <textarea
-                name="excerpt"
-                value={formData.excerpt}
-                onChange={handleChange}
-                rows={3}
-                className={`w-full px-4 py-3  border focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent text-white placeholder-gray-400 ${
-                  errors.excerpt ? "border-red-500" : "border-gray-600"
-                }`}
-                placeholder="Enter a brief excerpt for your post"
-              />
-              {errors.excerpt && <p className="text-red-400 text-sm mt-1">{errors.excerpt}</p>}
-            </div>
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">Category *</label>
@@ -150,33 +201,30 @@ export default function CreatePostPage() {
                   onChange={handleChange}
                   className="w-full px-4 py-3 bg-black border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent text-white"
                 >
-                  <option value="draft">Draft</option>
-                  <option value="published">Published</option>
-                  <option value="archived">Archived</option>
+                  {statusList.map((status) => (
+                    <option key={status} value={status.toLowerCase()}>
+                      {status}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
           </div>
 
-          {/* Content */}
+          {/* description */}
           <div className=" p-6 border border-gray-700">
-            <h2 className="text-xl font-semibold text-white mb-6">Content</h2>
+            <h2 className="text-xl font-semibold text-white mb-6">Description</h2>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Content *</label>
-              <textarea
-                name="content"
-                value={formData.content}
-                onChange={handleChange}
-                rows={12}
-                className={`w-full px-4 py-3  border focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent text-white placeholder-gray-400 ${
-                  errors.content ? "border-red-500" : "border-gray-600"
-                }`}
-                placeholder="Write your blog post content here. You can use HTML tags for formatting."
+              <label className="block text-sm font-medium text-gray-300 mb-2">Description *</label>
+              <RichTextEditor
+                value={formData.description}
+                onChange={handleDescriptionChange}
+                placeholder="Write your blog post description here. You can use the toolbar above for formatting."
               />
-              {errors.content && <p className="text-red-400 text-sm mt-1">{errors.content}</p>}
+              {errors.description && <p className="text-red-400 text-sm mt-1">{errors.description}</p>}
               <p className="text-gray-400 text-sm mt-2">
-                You can use HTML tags like &lt;h2&gt;, &lt;p&gt;, &lt;strong&gt;, etc. for formatting.
+                Use the toolbar above to format your content with headings, lists, links, images, and more.
               </p>
             </div>
           </div>
@@ -189,24 +237,24 @@ export default function CreatePostPage() {
               <label className="block text-sm font-medium text-gray-300 mb-2">Featured Image URL *</label>
               <input
                 type="url"
-                name="imageUrl"
-                value={formData.imageUrl}
+                name="image"
+                value={formData.image}
                 onChange={handleChange}
                 className={`w-full px-4 py-3  border focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent text-white placeholder-gray-400 ${
-                  errors.imageUrl ? "border-red-500" : "border-gray-600"
+                  errors.image ? "border-red-500" : "border-gray-600"
                 }`}
                 placeholder="https://images.unsplash.com/photo-..."
               />
-              {errors.imageUrl && <p className="text-red-400 text-sm mt-1">{errors.imageUrl}</p>}
+              {errors.image && <p className="text-red-400 text-sm mt-1">{errors.image}</p>}
               <p className="text-gray-400 text-sm mt-2">Enter a valid image URL. Recommended size: 1200x600 pixels.</p>
             </div>
 
-            {formData.imageUrl && (
+            {formData.image && (
               <div className="mt-4">
                 <label className="block text-sm font-medium text-gray-300 mb-2">Image Preview</label>
-                <div className="relative w-full h-48 overflow-hidden border border-gray-600">
+                <div className="relative w-full h-60 overflow-hidden border border-gray-600">
                   <img
-                    src={formData.imageUrl}
+                    src={formData.image}
                     alt="Preview"
                     className="w-full h-full object-cover"
                     onError={(e) => {
@@ -234,6 +282,20 @@ export default function CreatePostPage() {
                 placeholder="Enter tags separated by commas (e.g., React, JavaScript, Web Development)"
               />
               <p className="text-gray-400 text-sm mt-2">Separate multiple tags with commas.</p>
+
+              {/* Show processed tags preview */}
+              {formData.tags && (
+                <div className="mt-3">
+                  <p className="text-sm text-gray-400 mb-2">Tags that will be sent:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {processTags(formData.tags).map((tag, index) => (
+                      <span key={index} className="px-2 py-1 bg-gray-700 text-white text-xs rounded">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

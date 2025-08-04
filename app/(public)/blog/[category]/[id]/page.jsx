@@ -120,8 +120,8 @@ export default async function BlogPostPage({ params }) {
 
         {/* Article Content */}
         <div className="prose prose-lg max-w-none">
-          {/* <div className="leading-relaxed" dangerouslySetInnerHTML={{ __html: post.description }} /> */}
-          <div className="leading-relaxed">{post.description}</div>
+          <div className="leading-relaxed" dangerouslySetInnerHTML={{ __html: post.description }} />
+          {/* <div className="leading-relaxed">{post.description}</div> */}
         </div>
 
         {/* Author Info */}

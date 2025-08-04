@@ -30,7 +30,7 @@ export default function ViewCardComponent(params) {
           <h1 className="text-xl line-clamp-1 font-bold group-hover:text-red-500 transition-all duration-300 cursor-default">
             {title}
           </h1>
-          <p className="text-xs opacity-50 line-clamp-4">{description}</p>
+          <p className="text-xs opacity-50 line-clamp-4" dangerouslySetInnerHTML={{ __html: description }} />
           <Link
             href={`/blog/${category.toLowerCase()}/${postId}`}
             className="text-sm hover:underline absolute bottom-0 left-0"
