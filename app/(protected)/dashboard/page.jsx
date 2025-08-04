@@ -1,9 +1,11 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import DashNavComponent from "@/components/dashboard/DashNavComponent";
 import DashContent from "@/components/dashboard/DashContent";
+import { usePosts } from "@/hooks/usePosts";
+import { useAuth } from "@/hooks/useAuth";
 
 // Sample blog posts data
 const blogPosts = [
@@ -46,13 +48,28 @@ export default function DashboardPage() {
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredPosts = blogPosts.filter((post) => {
+  const { allMyPosts, fetchAllMyPosts, isPostsLoading } = usePosts();
+  const { userData, fetchAuthentication } = useAuth();
+
+  const filteredPosts = allMyPosts.filter((post) => {
     const matchesStatus = selectedStatus === "all" || post.status === selectedStatus;
     const matchesSearch =
       post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       post.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesStatus && matchesSearch;
   });
+
+  useEffect(() => {
+    console.log(allMyPosts, "allMyPosts");
+    if (userData.id) {
+      if (allMyPosts.length === 0) {
+        console.log("am i in", userData.id);
+        fetchAllMyPosts(userData.id);
+      }
+    } else {
+      fetchAuthentication();
+    }
+  }, [userData, isPostsLoading]);
 
   return (
     <div className="min-h-screen  text-white p-8 pb-20 gap-16 sm:p-20 sm:py-14">

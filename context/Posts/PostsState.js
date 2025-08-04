@@ -12,6 +12,7 @@ const PostsState = ({ children }) => {
   const router = useRouter();
   const { userData } = useAuth();
   const [allPosts, setAllPosts] = useState([]);
+  const [allMyPosts, setAllMyPosts] = useState([]);
 
   // await new Promise((resolve) => setTimeout(resolve, 2000));
 
@@ -20,7 +21,7 @@ const PostsState = ({ children }) => {
     try {
       const url = "/blogs";
 
-      const response = await getAllData(url, data);
+      const response = await getAllData(url);
 
       if (response.data) {
         setAllPosts(response.data);
@@ -29,6 +30,33 @@ const PostsState = ({ children }) => {
       } else {
         toast.error("Failed to fetch posts");
         setAllPosts([]);
+        setIsPostsLoading(false);
+        return false;
+      }
+    } catch (err) {
+      toast.error(err);
+      setIsPostsLoading(false);
+      return false;
+    }
+  };
+
+  const fetchAllMyPosts = async (userId) => {
+    setIsPostsLoading(true);
+    console.log(userId, "userId");
+    try {
+      const url = "/blogs";
+
+      const response = await getAllData(url);
+
+      if (response.data) {
+        const myPosts = response.data.filter((post) => post.user === userId);
+        setAllMyPosts(myPosts);
+        setIsPostsLoading(false);
+        console.log(myPosts, "myPosts");
+        return true;
+      } else {
+        toast.error("Failed to fetch posts");
+        setAllMyPosts([]);
         setIsPostsLoading(false);
         return false;
       }
@@ -79,7 +107,7 @@ const PostsState = ({ children }) => {
   };
 
   return (
-    <PostsContext.Provider value={{ createPost, isPostsLoading, allPosts, fetchAllPosts }}>
+    <PostsContext.Provider value={{ createPost, isPostsLoading, allPosts, fetchAllPosts, fetchAllMyPosts, allMyPosts }}>
       {children}
     </PostsContext.Provider>
   );
