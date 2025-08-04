@@ -26,17 +26,17 @@ body {
 }
 
 h1 {
-  font-size: 3rem; /* Tailwind's text-2xl */
+  font-size: 3rem;
   font-weight: bold;
 }
 
 h2 {
-  font-size: 1.5rem; /* Tailwind's text-xl */
+  font-size: 1.5rem;
   font-weight: bold;
 }
 
 h3 {
-  font-size: 1.125rem; /* Tailwind's text-lg */
+  font-size: 1.125rem;
   font-weight: bold;
 }
 

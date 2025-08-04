@@ -1,8 +1,25 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "../ui/button";
+import { usePosts } from "@/hooks/usePosts";
+import { toast } from "react-toastify";
+import { useAuth } from "@/hooks/useAuth";
+import LoadingDots from "../LoadingDots";
 
 export default function DashBlogList({ filteredPosts }) {
+  const { deletePost, fetchAllPosts, fetchAllMyPosts, isPostsLoading } = usePosts();
+  const { userData } = useAuth();
+
   const getStatusBadge = (status) => {
     const statusConfig = {
       published: "bg-green-600 text-white",
@@ -10,11 +27,21 @@ export default function DashBlogList({ filteredPosts }) {
       archived: "bg-gray-600 text-white",
     };
     return (
-      <span className={`px-2 py-1 text-xs font-medium rounded-full ${statusConfig[status]}`}>
+      <span className={`px-2 py-1 text-xs font-medium rounded-full ${statusConfig[status.toLowerCase()]}`}>
         {status.charAt(0).toUpperCase() + status.slice(1)}
       </span>
     );
   };
+
+  const handleDeletePost = async (postid, postUID) => {
+    const response = await deletePost(postid, postUID);
+    if (response) {
+      toast.success("Post deleted !");
+      fetchAllPosts();
+      fetchAllMyPosts(userData.id);
+    }
+  };
+
   return (
     <div className="">
       {/* Posts Table */}
@@ -56,7 +83,7 @@ export default function DashBlogList({ filteredPosts }) {
                   {/* <td className="px-6 py-4 text-sm text-gray-300">{post.author}</td> */}
                   <td className="px-6 py-4 text-sm text-gray-300">{post.category}</td>
                   <td className="px-6 py-4">{getStatusBadge(post.status)}</td>
-                  <td className="px-6 py-4 text-sm text-gray-300">{post.createdAt}</td>
+                  <td className="px-6 py-4 text-sm text-gray-300">{post.createdAt.slice(0, 10)}</td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
                       <Link
@@ -91,16 +118,42 @@ export default function DashBlogList({ filteredPosts }) {
                           />
                         </svg>
                       </Link>
-                      <button className="text-red-400 hover:text-red-300 transition-colors">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                          />
-                        </svg>
-                      </button>
+                      <Dialog>
+                        <DialogTrigger>
+                          <div className="text-red-400 hover:text-red-300 cursor-pointer transition-colors">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                              />
+                            </svg>
+                          </div>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle className={"text-xs"}>Are you sure want to delete this post?</DialogTitle>
+                            <DialogDescription>
+                              This action cannot be undone. This will permanently delete your blog post.
+                            </DialogDescription>
+                          </DialogHeader>
+                          <DialogFooter>
+                            <button
+                              className="bg-red-600 text-white px-5 py-2 cursor-pointer"
+                              onClick={() => handleDeletePost(post.id, post.user)}
+                            >
+                              {isPostsLoading ? (
+                                <div className="py-2">
+                                  <LoadingDots />
+                                </div>
+                              ) : (
+                                "Delete"
+                              )}
+                            </button>
+                          </DialogFooter>
+                        </DialogContent>
+                      </Dialog>
                     </div>
                   </td>
                 </tr>

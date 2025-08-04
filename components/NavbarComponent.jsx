@@ -6,7 +6,7 @@ export default function NavbarComponent() {
   return (
     <div className="navbar w-full flex justify-between">
       <div className="logo">
-        <h1 className="text-2xl font-bold">Blog World</h1>
+        <h1 className="!text-2xl font-bold">Blog World</h1>
       </div>
       <div className="menuList">
         <ul className="flex gap-9">
@@ -14,10 +14,10 @@ export default function NavbarComponent() {
             <Link href={"/"}>Home</Link>
           </li>
           <li>
-            <Link href={"/about"}>About</Link>
+            <Link href={"/#"}>About</Link>
           </li>
           <li>
-            <Link href={"/dashboard"}>Contact</Link>
+            <Link href={"/#"}>Contact</Link>
           </li>
           <li>
             <NavbarButtonChecker />

@@ -1,3 +1,4 @@
+import BlankViewCardComponent from "@/components/cards/BlankViewCardComponent";
 import ViewCardComponent from "@/components/cards/ViewCardComponent";
 import { CategoryList } from "@/config/category";
 import Link from "next/link";
@@ -26,7 +27,9 @@ async function fetchPosts(category) {
 
     const data = await response.json();
 
-    const filteredPosts = data.filter((post) => post.category.toLowerCase() === category.toLowerCase());
+    const filteredPosts = data.filter(
+      (post) => post.category.toLowerCase() === category.toLowerCase() && post.status.toLowerCase() === "published"
+    );
     return filteredPosts || [];
   } catch (error) {
     console.error("Error fetching posts:", error);
@@ -81,7 +84,7 @@ export default async function Blogs({ params }) {
             ) : (
               // Fallback to static cards if no posts are fetched
               <>
-                <ViewCardComponent imageId="1" />
+                <BlankViewCardComponent />
               </>
             )}
           </div>

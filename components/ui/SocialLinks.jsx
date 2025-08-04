@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React from "react";
-import { BsFacebook, BsLinkedin } from "react-icons/bs";
+import { BsFacebook, BsGithub, BsLinkedin } from "react-icons/bs";
 import { SiInstagram } from "react-icons/si";
 
 export default function SocialLinks() {
@@ -17,7 +17,12 @@ export default function SocialLinks() {
         </Link>
       </li>
       <li>
-        <Link href={"https://www.linkedin.com"} className="hover:text-red-500 transition-all duration-300">
+        <Link href={"https://github.com/Neesyuu"} className="hover:text-red-500 transition-all duration-300">
+          <BsGithub />
+        </Link>
+      </li>
+      <li>
+        <Link href={"https://www.linkedin.com/in/neesyuu"} className="hover:text-red-500 transition-all duration-300">
           <BsLinkedin />
         </Link>
       </li>

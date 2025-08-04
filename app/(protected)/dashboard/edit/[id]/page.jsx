@@ -162,7 +162,7 @@ export default function EditPostPage() {
     );
   }
 
-  if (!post) {
+  if (!post || parseInt(formData.user) !== parseInt(userData.id)) {
     return (
       <div className="min-h-screen text-white flex items-center justify-center">
         <div className="text-center">

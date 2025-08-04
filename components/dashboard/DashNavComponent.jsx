@@ -12,7 +12,7 @@ export default function DashNavComponent({
   return (
     <div className="navbar w-full flex justify-between">
       <div className="logo">
-        <h1 className="text-2xl font-bold">Dashboard</h1>
+        <h1 className="!text-2xl font-bold">Dashboard</h1>
         <p className="text-gray-400 mt-1">Manage your blog posts</p>
       </div>
       <div className="menuList">

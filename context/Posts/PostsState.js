@@ -5,7 +5,7 @@ import PostsContext from "./PostsContext";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { useAuth } from "@/hooks/useAuth";
-import { getAllData, postData, updateData } from "@/apiServices/apiService";
+import { deleteData, getAllData, postData, updateData } from "@/apiServices/apiService";
 
 const PostsState = ({ children }) => {
   const [isPostsLoading, setIsPostsLoading] = useState(false);
@@ -139,7 +139,7 @@ const PostsState = ({ children }) => {
     }
 
     try {
-      if (postUID !== userData.id) {
+      if (postUID !== parseInt(userData.id)) {
         toast.error("Unauthorized");
         return false;
       }
@@ -160,11 +160,45 @@ const PostsState = ({ children }) => {
       const response = await updateData(url, data);
 
       if (response.data) {
-        toast.success("Post updated successfully!");
+        // toast.success("Post updated successfully!");
         setIsPostsLoading(false);
         return true;
       } else {
         toast.error("Post updated failed!");
+        setIsPostsLoading(false);
+        return false;
+      }
+    } catch (err) {
+      toast.error(err);
+      setIsPostsLoading(false);
+      return false;
+    }
+  };
+
+  const deletePost = async (postid, postUID) => {
+    setIsPostsLoading(true);
+
+    if (!userData) {
+      toast.error("Unauthorized");
+      return false;
+    }
+
+    try {
+      if (postUID !== parseInt(userData.id)) {
+        toast.error("Unauthorized");
+        return false;
+      }
+
+      const url = `/blogs/${postid}`;
+
+      const response = await deleteData(url);
+
+      if (response.data) {
+        // toast.success("Post deleted !");
+        setIsPostsLoading(false);
+        return true;
+      } else {
+        toast.error("Post deletion failed!");
         setIsPostsLoading(false);
         return false;
       }
@@ -186,6 +220,7 @@ const PostsState = ({ children }) => {
         allMyPosts,
         fetchPostById,
         updatePost,
+        deletePost,
       }}
     >
       {children}

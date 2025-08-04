@@ -1,3 +1,4 @@
+import BlankViewCardComponent from "@/components/cards/BlankViewCardComponent";
 import ViewCardComponent from "@/components/cards/ViewCardComponent";
 import SocialLinks from "@/components/ui/SocialLinks";
 import { CategoryList } from "@/config/category";
@@ -25,7 +26,8 @@ async function fetchPosts() {
     }
 
     const data = await response.json();
-    return data.data || data || [];
+    const viewData = data.filter((post) => post.status.toLowerCase() === "published");
+    return viewData || [];
   } catch (error) {
     console.error("Error fetching posts:", error);
     return [];
@@ -70,7 +72,7 @@ export default async function Home() {
             ) : (
               // Fallback to static cards if no posts are fetched
               <>
-                <ViewCardComponent imageId="1" />
+                <BlankViewCardComponent />
               </>
             )}
           </div>

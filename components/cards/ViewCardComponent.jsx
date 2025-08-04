@@ -28,7 +28,7 @@ export default function ViewCardComponent(params) {
       </div>
       <div className="row-span-2 relative my-3 mx-2">
         <div className="cardContent flex flex-col gap-4">
-          <h1 className="text-xl line-clamp-1 font-bold group-hover:text-red-500 transition-all duration-300 cursor-default">
+          <h1 className="!text-xl line-clamp-1 font-bold group-hover:text-red-500 transition-all duration-300 cursor-default">
             {title}
           </h1>
           <div className="text-xs opacity-50 line-clamp-4">{brief}</div>

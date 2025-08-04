@@ -1,6 +1,10 @@
 import React from "react";
 
-export default function PostStatus() {
+export default function PostStatus({ filteredPosts }) {
+  const totalPosts = filteredPosts.length;
+  const publishedPosts = filteredPosts.filter((post) => post.status.toLowerCase() === "published").length;
+  const draftsPosts = filteredPosts.filter((post) => post.status.toLowerCase() === "draft").length;
+
   return (
     <div className="tags flex flex-col gap-1 h-full ">
       <div className="listTags my-auto flex flex-col gap-3">
@@ -18,7 +22,7 @@ export default function PostStatus() {
           <div className="ml-4">
             <p className="text-gray-400 text-sm">Total Posts</p>
             {/* <p className="text-2xl font-bold text-white">{blogPosts.length}</p> */}
-            <p className="text-2xl font-bold text-white">{3}</p>
+            <p className="text-2xl font-bold text-white">{totalPosts}</p>
           </div>
         </div>
 
@@ -32,7 +36,7 @@ export default function PostStatus() {
             <p className="text-gray-400 text-sm">Published</p>
             <p className="text-2xl font-bold text-white">
               {/* {blogPosts.filter((p) => p.status === "published").length} */}
-              {3}
+              {publishedPosts}
             </p>
           </div>
         </div>
@@ -50,7 +54,7 @@ export default function PostStatus() {
           </div>
           <div className="ml-4">
             <p className="text-gray-400 text-sm">Drafts</p>
-            <p className="text-2xl font-bold text-white">{3}</p>
+            <p className="text-2xl font-bold text-white">{draftsPosts}</p>
           </div>
         </div>
       </div>

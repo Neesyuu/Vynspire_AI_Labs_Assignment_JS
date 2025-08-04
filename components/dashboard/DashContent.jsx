@@ -16,7 +16,7 @@ export default function DashContent({ filteredPosts }) {
     <main className="w-full h-[70vh] flex flex-col">
       <div className="grid grid-cols-8 w-full flex-1 min-h-full">
         <div className="staticDiv col-span-2 relative h-full p-5">
-          <PostStatus />
+          <PostStatus filteredPosts={filteredPosts} />
           <div className="social absolute -bottom-10 left-0 w-full">
             <div className="userDetail flex flex-col w-[60%] justify-center my-auto gap-2">
               <div className="my-auto flex items-center gap-2 border-2 border-red-500 ">
@@ -32,11 +32,11 @@ export default function DashContent({ filteredPosts }) {
                   </div>
                 </div>
                 <div className="nameText">
-                  <h3 className="text-sm">{userData?.fullName}</h3>
+                  <h3 className="!text-sm line-clamp-1">{userData?.fullName}</h3>
                   <p className="text-xs text-gray-500">Blogger</p>
                 </div>
               </div>
-              <div className="flex gap-4">
+              <div className="flex gap-2">
                 <button
                   onClick={handleLogout}
                   className="w-full border-2 border-red-500/40 hover:bg-red-500 cursor-pointer text-center text-white px-3 py-1 transition-all duration-300"
