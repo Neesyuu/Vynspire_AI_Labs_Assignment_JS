@@ -25,6 +25,21 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+h1 {
+  font-size: 3rem; /* Tailwind's text-2xl */
+  font-weight: bold;
+}
+
+h2 {
+  font-size: 1.5rem; /* Tailwind's text-xl */
+  font-weight: bold;
+}
+
+h3 {
+  font-size: 1.125rem; /* Tailwind's text-lg */
+  font-weight: bold;
+}
+
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }

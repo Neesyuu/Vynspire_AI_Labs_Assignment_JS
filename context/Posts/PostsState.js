@@ -5,7 +5,7 @@ import PostsContext from "./PostsContext";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { useAuth } from "@/hooks/useAuth";
-import { getAllData, postData } from "@/apiServices/apiService";
+import { getAllData, postData, updateData } from "@/apiServices/apiService";
 
 const PostsState = ({ children }) => {
   const [isPostsLoading, setIsPostsLoading] = useState(false);
@@ -40,6 +40,28 @@ const PostsState = ({ children }) => {
     }
   };
 
+  const fetchPostById = async (id) => {
+    setIsPostsLoading(true);
+    try {
+      const url = `/blogs/${id}`;
+
+      const response = await getAllData(url);
+
+      if (response.data) {
+        setIsPostsLoading(false);
+        return response.data;
+      } else {
+        toast.error("Failed to fetch post");
+        setIsPostsLoading(false);
+        return false;
+      }
+    } catch (err) {
+      toast.error(err);
+      setIsPostsLoading(false);
+      return false;
+    }
+  };
+
   const fetchAllMyPosts = async (userId) => {
     setIsPostsLoading(true);
     console.log(userId, "userId");
@@ -47,15 +69,16 @@ const PostsState = ({ children }) => {
       const url = "/blogs";
 
       const response = await getAllData(url);
+      console.log(response, "response");
 
       if (response.data) {
-        const myPosts = response.data.filter((post) => post.user === userId);
+        const myPosts = response.data.filter((post) => post.user == userId);
         setAllMyPosts(myPosts);
         setIsPostsLoading(false);
         console.log(myPosts, "myPosts");
         return true;
       } else {
-        toast.error("Failed to fetch posts");
+        // toast.error("Failed to fetch posts");
         setAllMyPosts([]);
         setIsPostsLoading(false);
         return false;
@@ -67,7 +90,7 @@ const PostsState = ({ children }) => {
     }
   };
 
-  const createPost = async (title, description, image, tags, status, category) => {
+  const createPost = async (title, brief, description, image, tags, status, category) => {
     setIsPostsLoading(true);
 
     if (!userData) {
@@ -78,6 +101,7 @@ const PostsState = ({ children }) => {
     try {
       const data = {
         title,
+        brief,
         description,
         image,
         tags,
@@ -106,8 +130,64 @@ const PostsState = ({ children }) => {
     }
   };
 
+  const updatePost = async (postid, postUID, title, brief, description, image, tags, status, category) => {
+    setIsPostsLoading(true);
+
+    if (!userData) {
+      toast.error("Unauthorized");
+      return false;
+    }
+
+    try {
+      if (postUID !== userData.id) {
+        toast.error("Unauthorized");
+        return false;
+      }
+
+      const data = {
+        title,
+        brief,
+        description,
+        image,
+        tags,
+        status,
+        category,
+        user: postUID,
+      };
+
+      const url = `/blogs/${postid}`;
+
+      const response = await updateData(url, data);
+
+      if (response.data) {
+        toast.success("Post updated successfully!");
+        setIsPostsLoading(false);
+        return true;
+      } else {
+        toast.error("Post updated failed!");
+        setIsPostsLoading(false);
+        return false;
+      }
+    } catch (err) {
+      toast.error(err);
+      setIsPostsLoading(false);
+      return false;
+    }
+  };
+
   return (
-    <PostsContext.Provider value={{ createPost, isPostsLoading, allPosts, fetchAllPosts, fetchAllMyPosts, allMyPosts }}>
+    <PostsContext.Provider
+      value={{
+        createPost,
+        isPostsLoading,
+        allPosts,
+        fetchAllPosts,
+        fetchAllMyPosts,
+        allMyPosts,
+        fetchPostById,
+        updatePost,
+      }}
+    >
       {children}
     </PostsContext.Provider>
   );

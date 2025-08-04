@@ -115,7 +115,7 @@ export default async function BlogPostPage({ params }) {
         <header className="mb-8">
           <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">{post.title}</h1>
 
-          {/* <p className="text-xl mb-8 leading-relaxed">{post.excerpt}</p> */}
+          <p className="text-xl mb-8 leading-relaxed">{post.brief}</p>
         </header>
 
         {/* Article Content */}

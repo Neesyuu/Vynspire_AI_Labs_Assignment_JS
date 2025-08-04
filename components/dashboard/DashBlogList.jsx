@@ -24,9 +24,9 @@ export default function DashBlogList({ filteredPosts }) {
             <thead className="">
               <tr>
                 <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Post</th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                {/* <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                   Author
-                </th>
+                </th> */}
                 <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                   Category
                 </th>
@@ -45,18 +45,18 @@ export default function DashBlogList({ filteredPosts }) {
                   <td className="px-6 py-4">
                     <div className="flex items-center">
                       <div className="relative w-12 h-12  overflow-hidden flex-shrink-0">
-                        <Image src={post.imageUrl} alt={post.title} fill className="object-cover" />
+                        <Image src={post.image} alt={post.title} fill className="object-cover" />
                       </div>
                       <div className="ml-4">
                         <div className="text-sm font-medium text-white line-clamp-1">{post.title}</div>
-                        <div className="text-sm text-gray-400 line-clamp-1">{post.excerpt}</div>
+                        {/* <div className="text-sm text-gray-400 line-clamp-1">{post.description}</div> */}
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-300">{post.author}</td>
+                  {/* <td className="px-6 py-4 text-sm text-gray-300">{post.author}</td> */}
                   <td className="px-6 py-4 text-sm text-gray-300">{post.category}</td>
                   <td className="px-6 py-4">{getStatusBadge(post.status)}</td>
-                  <td className="px-6 py-4 text-sm text-gray-300">{post.date}</td>
+                  <td className="px-6 py-4 text-sm text-gray-300">{post.createdAt}</td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
                       <Link
@@ -72,7 +72,10 @@ export default function DashBlogList({ filteredPosts }) {
                           />
                         </svg>
                       </Link>
-                      <Link href={`/blog/${post.id}`} className="text-green-400 hover:text-green-300 transition-colors">
+                      <Link
+                        href={`/blog/${post.category.toLowerCase()}/${post.id}`}
+                        className="text-green-400 hover:text-green-300 transition-colors"
+                      >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path
                             strokeLinecap="round"

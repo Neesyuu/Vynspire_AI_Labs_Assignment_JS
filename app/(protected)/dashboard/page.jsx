@@ -52,7 +52,7 @@ export default function DashboardPage() {
   const { userData, fetchAuthentication } = useAuth();
 
   const filteredPosts = allMyPosts.filter((post) => {
-    const matchesStatus = selectedStatus === "all" || post.status === selectedStatus;
+    const matchesStatus = selectedStatus === "all" || post.status.toLowerCase() === selectedStatus.toLowerCase();
     const matchesSearch =
       post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       post.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
@@ -61,15 +61,25 @@ export default function DashboardPage() {
 
   useEffect(() => {
     console.log(allMyPosts, "allMyPosts");
-    if (userData.id) {
-      if (allMyPosts.length === 0) {
+    if (userData && userData.id) {
+      if (allMyPosts) {
         console.log("am i in", userData.id);
         fetchAllMyPosts(userData.id);
       }
     } else {
       fetchAuthentication();
     }
-  }, [userData, isPostsLoading]);
+  }, []);
+
+  useEffect(() => {
+    console.log(allMyPosts, "allMyPosts");
+    if (userData && userData.id) {
+      if (allMyPosts) {
+        console.log("am i in", userData.id);
+        fetchAllMyPosts(userData.id);
+      }
+    }
+  }, [userData]);
 
   return (
     <div className="min-h-screen  text-white p-8 pb-20 gap-16 sm:p-20 sm:py-14">

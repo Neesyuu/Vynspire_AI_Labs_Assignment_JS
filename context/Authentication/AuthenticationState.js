@@ -107,7 +107,9 @@ const AuthenticationState = ({ children }) => {
       const response = await getAllData(url, data);
 
       if (response.data && response.data.length > 0) {
+        console.log(response.data, "response.data");
         for (const user of response.data) {
+          console.log(user, "user");
           if (user.email === email && user.password === password) {
             let responseData = {
               id: user.id,
@@ -115,6 +117,7 @@ const AuthenticationState = ({ children }) => {
               email: user.email,
               avatar: user.avatar,
             };
+            console.log(responseData, "responseData");
 
             let genToken = await generateToken(responseData);
 
@@ -124,12 +127,11 @@ const AuthenticationState = ({ children }) => {
             await new Promise((resolve) => setTimeout(resolve, 2000));
             // setIsLoading(false);
             return true;
-          } else {
-            // setIsLoading(false);
-            toast.error("Make sure you have entered the correct credentials!");
-            return false;
           }
         }
+        setIsLoading(false);
+        toast.error("Make sure you have entered the correct credentials!");
+        return false;
       } else {
         setIsLoading(false);
         toast.error("Make sure you have entered the correct credentials!");

@@ -9,6 +9,7 @@ export default function ViewCardComponent(params) {
 
   // If post data is provided, use it; otherwise fall back to static content
   const title = post?.title || "Title";
+  const brief = post?.brief || "Brief";
   const description = post?.description || "Description";
   const postId = post?._id || post?.id || id || 1;
   const category = post?.category || "category";
@@ -30,7 +31,8 @@ export default function ViewCardComponent(params) {
           <h1 className="text-xl line-clamp-1 font-bold group-hover:text-red-500 transition-all duration-300 cursor-default">
             {title}
           </h1>
-          <p className="text-xs opacity-50 line-clamp-4" dangerouslySetInnerHTML={{ __html: description }} />
+          <div className="text-xs opacity-50 line-clamp-4">{brief}</div>
+
           <Link
             href={`/blog/${category.toLowerCase()}/${postId}`}
             className="text-sm hover:underline absolute bottom-0 left-0"

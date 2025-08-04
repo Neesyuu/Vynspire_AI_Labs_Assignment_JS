@@ -9,7 +9,7 @@ import { usePosts } from "@/hooks/usePosts";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import LoadingDots from "@/components/LoadingDots";
-import RichTextEditor from "@/components/RichTextEditor";
+import RichTextEditorComponent from "@/components/RichTextEditor/RichTextEditorComponent";
 
 export default function CreatePostPage() {
   const { userData } = useAuth();
@@ -20,6 +20,7 @@ export default function CreatePostPage() {
 
   const [formData, setFormData] = useState({
     title: "",
+    brief: "",
     description: "",
     user: userData?.id,
     category: "",
@@ -81,6 +82,7 @@ export default function CreatePostPage() {
     // Basic validation
     const newErrors = {};
     if (!formData.title.trim()) newErrors.title = "Title is required";
+    if (!formData.brief.trim()) newErrors.brief = "Brief is required";
     if (!formData.description.trim()) newErrors.description = "Description is required";
     if (!formData.category) newErrors.category = "Category is required";
     if (!formData.image.trim()) newErrors.image = "Image URL is required";
@@ -101,6 +103,7 @@ export default function CreatePostPage() {
     // You would typically send this to your API
     const response = await createPost(
       submissionData.title,
+      submissionData.brief,
       submissionData.description,
       submissionData.image,
       submissionData.tags,
@@ -172,6 +175,23 @@ export default function CreatePostPage() {
               </div>
             </div>
 
+            <div className="grid grid-cols-1 md:grid-cols-1 gap-6 mt-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Brief *</label>
+                <textarea
+                  type="text"
+                  name="brief"
+                  value={formData.brief}
+                  onChange={handleChange}
+                  className={`w-full px-4 py-3  border focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent text-white placeholder-gray-400 ${
+                    errors.brief ? "border-red-500" : "border-gray-600"
+                  }`}
+                  placeholder="Enter post brief"
+                />
+                {errors.brief && <p className="text-red-400 text-sm mt-1">{errors.brief}</p>}
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">Category *</label>
@@ -217,11 +237,8 @@ export default function CreatePostPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">Description *</label>
-              <RichTextEditor
-                value={formData.description}
-                onChange={handleDescriptionChange}
-                placeholder="Write your blog post description here. You can use the toolbar above for formatting."
-              />
+              <RichTextEditorComponent content={formData.description} onChange={handleDescriptionChange} />
+
               {errors.description && <p className="text-red-400 text-sm mt-1">{errors.description}</p>}
               <p className="text-gray-400 text-sm mt-2">
                 Use the toolbar above to format your content with headings, lists, links, images, and more.
@@ -306,7 +323,7 @@ export default function CreatePostPage() {
             </Link>
             <button
               type="submit"
-              className="px-6 py-3 bg-red-600 text-white hover:bg-red-700 transition-colors font-semibold"
+              className="px-6 py-3 bg-red-600 text-white hover:bg-red-700 transition-colors font-semibold cursor-pointer"
             >
               Create Post
             </button>
