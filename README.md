@@ -1,6 +1,6 @@
 # 📝 Blog World - Modern Blog Platform
 
-A full-featured, responsive blog platform built with Next.js 15, React 19, and Tailwind CSS. Features rich text editing, user authentication, and a beautiful mobile-responsive design.
+A full-featured, responsive blog platform built with Next.js 15, React 19, and Tailwind CSS within 2 days as assignment. Features rich text editing, user authentication, and a beautiful mobile-responsive design.
 
 ![Blog World](https://img.shields.io/badge/Next.js-15.4.5-black?style=for-the-badge&logo=next.js)
 ![React](https://img.shields.io/badge/React-19.1.0-blue?style=for-the-badge&logo=react)
@@ -275,15 +275,15 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 If you have any questions or need help, please:
 
-- 📧 Email: your-email@example.com
-- 🐛 Issues: [GitHub Issues](https://github.com/yourusername/blog-world/issues)
-- 💬 Discussions: [GitHub Discussions](https://github.com/yourusername/blog-world/discussions)
+- 📧 Email: neesyuu@gmail.com
+- 🐛 Issues: [GitHub Issues](https://github.com/neesyuu/blog-world/issues)
+- 💬 Discussions: [GitHub Discussions](https://github.com/neesyuu/blog-world/discussions)
 
 ---
 
 <div align="center">
 
-**Made with ❤️ by [Your Name]**
+**Made with ❤️ by Nischal**
 
 [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/yourusername)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/yourusername)
